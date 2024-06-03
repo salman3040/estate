@@ -14,6 +14,8 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
+const __dirname = path.resolve();
+
 const port = process.env.PORT || 5000;
 mongoose
   .connect(process.env.MONGO_URL)
@@ -23,6 +25,12 @@ mongoose
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingsRouter);
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 // Middleware
 app.use((err, req, res, next) => {
